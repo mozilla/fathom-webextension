@@ -5,6 +5,9 @@
  *
  * Features: Title, Image, Price
  *
+ * Note that this page is defined in manifest.json to run at "document_idle"
+ * which is after all DOM content has been loaded.
+ *
  */
 
 const {dom, out, rule, ruleset, score, type} = require('fathom-web');
@@ -482,13 +485,6 @@ function runRuleset(feature, coeffs = []) {
     }
     return gotText;
 }
-//
-// Inform the background page that
-// this tab should have a page-action
-browser.runtime.sendMessage({
-  from:    'content',
-  subject: 'showPageAction'
-});
 
 
 // Listen for messages from the popup
@@ -506,3 +502,18 @@ browser.runtime.onMessage.addListener(function (msg, sender, response) {
     response(domInfo);
   }
 });
+
+// Inform the background page that
+// this tab is ready and enable the pageAction icon
+// in the URL bar
+
+browser.runtime.sendMessage({
+  from:    'content',
+  subject: 'ready',
+  scores: {
+    title:  runRuleset('title', tuningRoutines['title'].coeffs),
+    image:  runRuleset('image', tuningRoutines['image'].coeffs),
+    price:  runRuleset('price', tuningRoutines['price'].coeffs)
+  }
+});
+
