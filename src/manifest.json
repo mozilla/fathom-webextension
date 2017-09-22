@@ -17,6 +17,15 @@
     "default_popup": "popup/product_popup.html"
   },
 
+  "page_action": {
+      "browser_style": true,
+      "default_icon": {
+          "19": "wishlist_sidebar/19_icon.png",
+          "38": "wishlist_sidebar/38_icon.png"
+      },
+      "default_title": "Add to Wishlist"
+  },
+
   "sidebar_action": {
       "default_title": "Wishlist",
       "default_panel": "wishlist_sidebar/sidebar.html",

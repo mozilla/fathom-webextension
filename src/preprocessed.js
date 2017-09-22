@@ -482,6 +482,14 @@ function runRuleset(feature, coeffs = []) {
     }
     return gotText;
 }
+//
+// Inform the background page that
+// this tab should have a page-action
+browser.runtime.sendMessage({
+  from:    'content',
+  subject: 'showPageAction'
+});
+
 
 // Listen for messages from the popup
 browser.runtime.onMessage.addListener(function (msg, sender, response) {
