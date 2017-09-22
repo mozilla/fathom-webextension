@@ -5,6 +5,12 @@ function setDOMInfo(info) {
   document.getElementById('price').textContent = "$" + info.price;
 }
 
+browser.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+  if ((msg.from === 'background') && (msg.subject === 'fathom_data')) {
+    setDOMInfo(msg.payload);
+  }
+});
+
 // Once the DOM is ready...
 window.addEventListener('DOMContentLoaded', function () {
   // ...query for the active tab...
@@ -13,9 +19,7 @@ window.addEventListener('DOMContentLoaded', function () {
     currentWindow: true
   }, function (tabs) {
     // ...and send a request for the DOM info...
-    browser.tabs.sendMessage(
-        tabs[0].id,
-        {from: 'popup', subject: 'DOMInfo'},
-        setDOMInfo);
+    //
+    browser.runtime.sendMessage({from: 'popup', subject: 'DOMInfo'});
   });
 });

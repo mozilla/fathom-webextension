@@ -31,6 +31,9 @@ function formatPrice(priceString){
  * Remove the query params from a url by removing the '?' and the text that comes after it
  */
 function withoutQueryParams(url){
+  if (url === undefined) {
+    return;
+  }
   var index = url.indexOf('?');
   if (index !== -1){
     return url.substr(0,index);
@@ -506,7 +509,6 @@ browser.runtime.onMessage.addListener(function (msg, sender, response) {
 // Inform the background page that
 // this tab is ready and enable the pageAction icon
 // in the URL bar
-
 browser.runtime.sendMessage({
   from:    'content',
   subject: 'ready',

@@ -8,7 +8,7 @@ browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
   }
 });
 
-browser.runtime.onMessage.addListener(function (msg, sender) {
+browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   // First, validate the message's structure
   if ((msg.from === 'content') && (msg.subject === 'ready')) {
     // Enable the page-action for the requesting tab
@@ -19,11 +19,24 @@ browser.runtime.onMessage.addListener(function (msg, sender) {
     // Save fathom scores into fathomTabInfo
     fathomTabInfo[sender.tab.id] = msg.scores;
     console.log(`Added score info ${JSON.stringify(msg.scores)}`);
+  } else if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
+      console.log("Got message from popup for DOMInfo");
+      function onGot(tabs) {
+        for (let tab of tabs) {
+          // tab.url requires the `tabs` permission
+          let tabId = tab.id;
+          let resultData = fathomTabInfo[tabId];
+          console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
+          browser.runtime.sendMessage({'from': 'background',
+                                       'subject': 'fathom_data',
+                                       'payload': resultData});
+
+        }
+      }
+      function onError(error) {
+        console.log(`Error: ${error}`);
+      }
+      var querying = browser.tabs.query({currentWindow: true, active: true});
+      querying.then(onGot, onError);
   }
 });
-
-function handleClick() {
-  console.log("page action was clicked");
-}
-
-browser.pageAction.onClicked.addListener(handleClick);
