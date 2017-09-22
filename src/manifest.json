@@ -1,0 +1,33 @@
+{
+
+  "manifest_version": 2,
+  "name": "fathom-products",
+  "version": "1.0",
+
+  "description": "Extracts a product from a product detail page.",
+
+  "icons": {
+    "48": "icons/product-icon-48.png",
+    "96":"icons/product-icon-96.png"
+  },
+
+  "browser_action": {
+    "default_icon": "icons/product-icon-32.png",
+    "default_title": "Fathom-Products",
+    "default_popup": "popup/product_popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["product-extension.js"],
+      "run_at":     "document_idle",
+      "all_frames": false
+    }
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  }
+
+}
