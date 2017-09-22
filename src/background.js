@@ -27,6 +27,10 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
           let tabId = tab.id;
           let resultData = fathomTabInfo[tabId];
           console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
+
+          // Note that we can't use the sendResponse function to send back data.
+          // No idea why this happens, but the promise in the pageAction popup
+          // doesn't seem to get payload we pass into sendResponse.
           browser.runtime.sendMessage({'from': 'background',
                                        'subject': 'fathom_data',
                                        'payload': resultData});
