@@ -28,6 +28,7 @@
   },
   "content_scripts": [
     {
+      "exclude_matches": ["https://www.google.ca/*"],
       "matches": ["<all_urls>"],
       "js": ["product-extension.js"],
       "run_at":     "document_idle",
