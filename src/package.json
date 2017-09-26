@@ -7,7 +7,10 @@
     "url": "https://github.com/swathiiyer2/fathom-products/issues"
   },
   "dependencies": {
-    "fathom-web": "^2.1.0"
+    "fathom-web": "^2.1.0",
+    "react": "^15.6.2",
+    "react-tap-event-plugin": "^2.0.1",
+    "react-dom": "^15.6.2"
   },
   "devDependencies": {
     "browserify": "^14.4.0",
