@@ -8,9 +8,8 @@
   },
   "dependencies": {
     "fathom-web": "^2.1.0",
-    "react": "^15.6.2",
-    "react-tap-event-plugin": "^2.0.1",
-    "react-dom": "^15.6.2"
+    "preact": "^8.2.5",
+    "preact-compat": "^3.17.0"
   },
   "devDependencies": {
     "browserify": "^14.4.0",
@@ -21,7 +20,8 @@
     "eslint-plugin-node": "^5.1.0",
     "istanbul": "^0.4.5",
     "jsdom": "^11.2.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "riek": "^1.1.0"
   },
   "engines": {
     "node": ">= 6.0.0"
