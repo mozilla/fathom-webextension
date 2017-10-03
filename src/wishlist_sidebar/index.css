@@ -1,16 +1,43 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+* {margin: 0; padding: 0;}
+
+div {
+  margin: 0px;
 }
 
-ol, ul {
-  padding-left: 30px;
+ul {
+  list-style-type: none;
+  width: 500px;
 }
 
-.wishlist {
+h3 {
+  font: bold 12px/1.5 Helvetica, Verdana, sans-serif;
 }
 
-.wishlist-item {
+li img {
+  float: left;
+  margin: 0 5px 0 0;
 }
 
+li p {
+  font: bold 200 12px/1.5 Helvetica, Verdana, sans-serif;
+}
 
+.delete_button {
+    font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+    float: left;
+    border: 1px;
+    right:0px;
+    bottom:0;
+    margin:0px;
+    padding:0px;
+}
+
+li {
+  padding: 10px;
+  overflow: auto;
+}
+
+li:hover {
+  background: #eee;
+  cursor: pointer;
+}
