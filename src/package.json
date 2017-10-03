@@ -7,19 +7,22 @@
     "url": "https://github.com/swathiiyer2/fathom-products/issues"
   },
   "dependencies": {
-    "fathom-web": "^2.1.0",
+    "fathom-web": "^2.2.0",
+    "html-webpack-plugin": "^2.30.1",
     "preact": "^8.2.5",
-    "preact-compat": "^3.17.0"
+    "preact-compat": "^3.17.0",
+    "webpack": "^3.6.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "browserify": "^14.4.0",
     "chai": "^4.0.2",
     "coveralls": "^2.11.11",
-    "envify": "^4.1.0",
     "eslint": "^3.7.1",
     "eslint-plugin-node": "^5.1.0",
     "istanbul": "^0.4.5",
-    "jsdom": "^11.2.0",
     "mocha": "^3.2.0",
     "riek": "^1.1.0"
   },

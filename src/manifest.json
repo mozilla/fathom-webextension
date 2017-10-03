@@ -23,7 +23,7 @@
 
   "sidebar_action": {
       "default_title": "Wishlist",
-      "default_panel": "wishlist_sidebar/sidebar.html",
+      "default_panel": "wishlist_sidebar/index.html",
       "default_icon": "wishlist_sidebar/icon.png"
   },
   "content_scripts": [
