@@ -2,12 +2,48 @@ var webpack = require('webpack');
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 var APP_DIR = path.resolve(__dirname);
 var WISHLIST_APP_DIR = APP_DIR + "/wishlist_sidebar";
 
 var BUILD_DIR = path.resolve(__dirname, 'build');
 var WISHLIST_BUILD_DIR = BUILD_DIR + '/wishlist_sidebar';
+
+var sidebar_config = {
+    entry: WISHLIST_APP_DIR + '/index.jsx',
+    devtool: 'eval-source-map',
+    output: {
+        path: WISHLIST_BUILD_DIR,
+        filename: './bundle.js',
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [ 'style-loader', 'css-loader' ]
+            },
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loader: "babel-loader",
+                query: { presets: ['env', 'react']}
+            },
+        ]
+    },
+    resolve: {
+        "alias": {
+            "react": "preact-compat",
+            "react-dom": "preact-compat",
+        }
+    },
+    plugins: [new HtmlWebpackPlugin({
+        template: WISHLIST_APP_DIR + '/index.template.ejs',
+        root: 'app', // TODO: this reference to 'app' is duplicated in index.jsx - need to refactor and consolidate this
+        title: 'Wishlist',
+    })]
+};
 
 var product_config = {
     entry: APP_DIR + '/preprocessed.js',
@@ -30,4 +66,4 @@ var product_config = {
     ]
 };
 
-module.exports = product_config;
+module.exports = [product_config, sidebar_config];
