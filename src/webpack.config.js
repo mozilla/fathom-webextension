@@ -1,9 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var APP_DIR = path.resolve(__dirname);
 var WISHLIST_APP_DIR = APP_DIR + "/wishlist_sidebar";
@@ -38,11 +36,19 @@ var sidebar_config = {
             "react-dom": "preact-compat",
         }
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: WISHLIST_APP_DIR + '/index.template.ejs',
-        root: 'app', // TODO: this reference to 'app' is duplicated in index.jsx - need to refactor and consolidate this
-        title: 'Wishlist',
-    })]
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: WISHLIST_APP_DIR + '/index.template.ejs',
+            root: 'app', // TODO: this reference to 'app' is duplicated in index.jsx - need to refactor and consolidate this
+            title: 'Wishlist',
+        }),
+        new CopyWebpackPlugin([
+            { from: 'icons', to: BUILD_DIR+'/icons' },
+            { from: 'popup', to: BUILD_DIR+'/popup' },
+            { from: 'background.js', to: BUILD_DIR },
+            { from: 'manifest.json', to: BUILD_DIR },
+        ]),
+    ]
 };
 
 var product_config = {
