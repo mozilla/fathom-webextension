@@ -8,6 +8,31 @@ browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
   }
 });
 
+/*
+ * The background script receives a number of messages.
+ *
+ * These are:
+ *
+ * 1. Sidebar has been made visible.  
+ *   The intent of this is to signal that the background script should
+ *   send a copy of all the fathom computed scores to the sidebar.
+ *
+ * 2. Page score is computed
+ *
+ * When the document_idle event is triggered, the content script will
+ * compute the fathom score info and pass it back to the background
+ * script for caching.
+ *
+ * 3. Page action is clicked
+ *
+ * This should signal the background script to *copy* the cached
+ * fathom scores for the current visible tab and put them into another 
+ * list which is used as the backing datastore for the wishlist.
+ *
+ * 4. TODO: some kind of signal to notify the background script that
+ * data has been updated manually through editting.
+ *
+ */
 browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     // First, validate the message's structure
     if ((msg.from === 'content') && (msg.subject === 'ready')) {
