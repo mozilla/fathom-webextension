@@ -1,5 +1,4 @@
-all:
-	@echo "Use the 'make install' target to build and install the extension."
+all: install
 
 clean:
 	mkdir -p build

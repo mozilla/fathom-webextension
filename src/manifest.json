@@ -7,15 +7,15 @@
   "description": "Extracts a product from a product detail page.",
 
   "icons": {
-    "48": "icons/product-icon-48.png",
-    "96":"icons/product-icon-96.png"
+    "19": "icons/product-icon-19.png",
+    "32": "icons/product-icon-32.png"
   },
 
   "page_action": {
       "browser_style": true,
       "default_icon": {
-          "19": "wishlist_sidebar/19_icon.png",
-          "38": "wishlist_sidebar/38_icon.png"
+          "19": "icons/product-icon-19.png",
+          "32": "icons/product-icon-32.png"
       },
       "default_title": "Add to Wishlist",
     "default_popup": "popup/product_popup.html"
@@ -24,7 +24,7 @@
   "sidebar_action": {
       "default_title": "Wishlist",
       "default_panel": "wishlist_sidebar/index.html",
-      "default_icon": "wishlist_sidebar/icon.png"
+      "default_icon": "icons/product-icon-32.png"
   },
  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "content_scripts": [
