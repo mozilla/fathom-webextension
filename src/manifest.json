@@ -24,7 +24,7 @@
   "sidebar_action": {
       "default_title": "Wishlist",
       "default_panel": "wishlist_sidebar/index.html",
-      "default_icon": "icons/product-icon-32.png"
+      "default_icon": "../icons/product-icon-32.png"
   },
  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "content_scripts": [

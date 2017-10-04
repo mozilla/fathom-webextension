@@ -48,11 +48,6 @@ var sidebar_config = {
             {from: 'background.js', to: BUILD_DIR },
             {from: 'manifest.json', to: BUILD_DIR },
         ]),
-        // The copy plugin is stupid and can't copy the same source
-        // directory twice.
-        new CopyWebpackPlugin([ 
-            {from: 'icons', to: WISHLIST_BUILD_DIR+'/icons'},
-        ]),
     ]
 };
 
