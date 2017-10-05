@@ -30,3 +30,10 @@ https://developer.mozilla.org/en-US/Add-ons/WebExtensions/user_interface/Sidebar
 Note that it's not possible for extension to open sidebars programmatically:
 sidebars can only be opened by the user.
 ```
+
+
+## Design docs
+
+All the data is stored in the background.js script.  
+
+This is all stored in a class `WishlistStore`

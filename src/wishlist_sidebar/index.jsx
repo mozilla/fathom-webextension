@@ -84,9 +84,34 @@ class Wishlist extends React.Component {
             ],
         };
 
-        // TODO: register listeners here
+        this.registerListeners();
     }
 
+    /*
+     * The sidebar needs to listen for just two messages.
+     *
+     * Namely:
+     *      refresh_all_data
+     *      added_item
+     */
+    registerListeners() {
+
+        // Bind currObject to 'this' so that we don't lose the scope
+        var currObject = this;
+
+        browser.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+            if ((msg.from === 'background') && (msg.subject === 'added_item')) {
+                // append the item to the internal React state
+                let items = currObject.state.items.slice();
+                items.push(JSON.parse(msg.payload));
+                currObject.setState({items: items});
+            } else if ((msg.from === 'background') && (msg.subject === 'refresh_all_data')) {
+                // Just overwrite all the internal state in the react
+                // object
+                currObject.setState({items: JSON.parse(msg.payload)});
+            };
+        });
+    }
 
     renderItem(i) {
         var items = this.state.items.slice();

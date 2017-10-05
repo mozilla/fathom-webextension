@@ -513,9 +513,10 @@ browser.runtime.sendMessage({
   from:    'content',
   subject: 'ready',
   scores: {
-    title:  runRuleset('title', tuningRoutines['title'].coeffs),
-    image:  runRuleset('image', tuningRoutines['image'].coeffs),
-    price:  runRuleset('price', tuningRoutines['price'].coeffs)
+    title: runRuleset('title', tuningRoutines['title'].coeffs),
+    image: runRuleset('image', tuningRoutines['image'].coeffs),
+    price: runRuleset('price', tuningRoutines['price'].coeffs),
+      url: window.document.URL
   }
 });
 
