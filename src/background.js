@@ -49,6 +49,13 @@ class WishlistStore {
 
     addItem(item) {
         // TODO: persist this into local storage
+        for (let temp_item of this.state.items) {
+            if (temp_item.url === item.url) {
+                browser.runtime.sendMessage({'from': 'background',
+                    'subject': 'duplicate_item'});
+                return;
+            }
+        }
         this.state.items.push(item);
         
         // send a message that an item has been added
