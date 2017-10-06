@@ -13,28 +13,28 @@ function initialize() {
         console.log("Fetched results from local storage!");
         var noteKeys = Object.keys(results);
         for (let noteKey of noteKeys) {
-            var curValue = results[noteKey];
-            console.log(`URL: ${noteKey}\n\tObj: ${JSON.stringify(curValue)}`);
-            WISHLIST.addItem(curValue);
+            var tmp_value = results[noteKey];
+            let item = new WishlistItem(tmp_value.title,
+                tmp_value.price,
+                tmp_value.url,
+                tmp_value.image);
+
+            console.log(`URL: ${noteKey}\n\tObj: ${JSON.stringify(item)}`);
+            WISHLIST.addItem(item);
         }
     }, onError);
 }
 
 class WishlistItem {
-    constructor(title, description, price, url, image_url) {
+    constructor(title, price, url, image) {
         this.title = title;
-        this.description = description;
         this.price = price;
         this.url = url;
-        this.image_url = image_url;
+        this.image = image;
     }
 
     getTitle() {
         return this.title;
-    }
-
-    getDescription() {
-        return this.description;
     }
 
     getPrice() {
@@ -46,15 +46,14 @@ class WishlistItem {
     }
 
     getImageUrl() {
-        return this.image_url;
+        return this.image;
     }
 
     toJSON() {
         return JSON.stringify({title: this.title,
-            description: this.description,
             price: this.price,
             url: this.url,
-            image: this.image_url});
+            image: this.image});
     }
 
 }
@@ -190,7 +189,6 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         setting.then(function() {
             console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
             let item = new WishlistItem(payload.title,
-                payload.title,
                 payload.price,
                 payload.url,
                 payload.image);
@@ -199,6 +197,12 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         }, onError);
     } else if ((msg.from === 'sidebar') && (msg.subject === 'deleted')) {
         WISHLIST.removeItem(msg.payload);
+    } else if ((msg.from === 'sidebar') && (msg.subject === 'request_refresh')) {
+        let msg = {'from': 'background',
+            'subject': 'response_refresh',
+            'payload': WISHLIST.getItems()};
+        console.log(`Background script is refreshing with ${JSON.stringify(msg)}`);
+        browser.runtime.sendMessage(msg);
     }
 });
 

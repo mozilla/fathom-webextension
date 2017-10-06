@@ -35,11 +35,11 @@ class WishlistItem extends React.Component {
                     ),
                     React.createElement(
                         'h3',
-                        {className: 'item-description'},
+                        {className: 'item-title'},
                         React.createElement(
                             'a',
                             {href: this.props.url},
-                            this.props.description,
+                            this.props.title,
                         )
                     ),
                     React.createElement(
@@ -67,24 +67,15 @@ class Wishlist extends React.Component {
     constructor() {
         super();
 
-        this.state = {
-            items: [
-                {
-                    description: "Vantrue N2 Dashcam",
-                    price: "$200",
-                    url: "https://www.amazon.ca/Vantrue-N2-Dual-Dash-Cam/dp/B01IHLKZ0I",
-                    image: "https://images-na.ssl-images-amazon.com/images/I/617lYhsy%2BJL._AC_UL115_.jpg",
-                },
-                {
-                    description: "NETGEAR Orbi Home WiFi System: AC3000 Tri Band Home Network with Router & Satellite Extender for up to 5000sqft of WiFi coverage (RBK50-100CNS)",
-                    price: "$549.80",
-                    url: "https://www.amazon.ca/NETGEAR-High-Performance-AC3000-Tri-Band-RBK50-100CNS/dp/B01LY964U3",
-                    image: "https://images-na.ssl-images-amazon.com/images/I/51MrEm%2BeFfL._SL1350_.jpg",
-                },
-            ],
-        };
+        this.state = {items: []};
 
         this.registerListeners();
+        this.requestRefresh();
+    }
+
+    requestRefresh() {
+        let msg = {from: 'sidebar', subject: 'request_refresh'};
+        browser.runtime.sendMessage(msg);
     }
 
     /*
@@ -105,11 +96,11 @@ class Wishlist extends React.Component {
                 let items = currObject.state.items.slice();
                 items.push(JSON.parse(msg.payload));
                 currObject.setState({items: items});
-            } else if ((msg.from === 'background') && (msg.subject === 'refresh_all_data')) {
+            } else if ((msg.from === 'background') && (msg.subject === 'response_refresh')) {
                 // Just overwrite all the internal state in the react
                 // object
                 console.log("Got a refresh of all data");
-                currObject.setState({items: JSON.parse(msg.payload)});
+                currObject.setState({items: msg.payload});
             };
         });
     }
@@ -119,7 +110,7 @@ class Wishlist extends React.Component {
         var wish_item = items[i];
         return React.createElement(WishlistItem,
             {
-                description: wish_item.description,
+                title: wish_item.title,
                 price: wish_item.price,
                 url: wish_item.url,
                 image: wish_item.image,
