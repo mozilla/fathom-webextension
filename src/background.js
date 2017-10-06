@@ -14,7 +14,7 @@ function initialize() {
         var noteKeys = Object.keys(results);
         for (let noteKey of noteKeys) {
             var curValue = results[noteKey];
-            console.log(`${noteKey}|${curValue}`);
+            console.log(`URL: ${noteKey}\n\tObj: ${JSON.stringify(curValue)}`);
         }
     }, onError);
 }
@@ -170,9 +170,6 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
             }
         }
-        function onError(error) {
-            console.log(`Error: ${error}`);
-        }
 
         // Get the currently selected tab 
         var selected_tab_promise = browser.tabs.query({currentWindow: true, active: true});
@@ -183,12 +180,25 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         // This is a product we want to save.  Append it to the
         // wishlist
         let payload = msg.payload;
-        let item = new WishlistItem(payload.title,
-            payload.title,
-            payload.price,
-            payload.url,
-            payload.image);
-        WISHLIST.addItem(item);
+        let key = payload.url;
+
+        let storage_payload = {};
+        storage_payload[key] = payload;
+
+        let setting = browser.storage.local.set(storage_payload);
+        console.log(`Saving item to disk! ${JSON.stringify(storage_payload)}`)
+        setting.then(function() {
+            console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
+            let item = new WishlistItem(payload.title,
+                payload.title,
+                payload.price,
+                payload.url,
+                payload.image);
+
+            WISHLIST.addItem(item);
+        }, onError);
+    } else if ((msg.from === 'sidebar') && (msg.subject === 'deleted')) {
+        WISHLIST.removeItem(msg.payload);
     }
 });
 
