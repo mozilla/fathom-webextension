@@ -3,12 +3,24 @@ import ReactDOM from 'react-dom';
 require('./index.css');
 
 
+/* generic error handler */
+function onError(error) {
+    console.log(error);
+}
+
+
 function handleClick(wishlist, index) {
     // This is basically a delete operation
     // Copy, splice and set the new list if item is clicked
     const items = wishlist.state.items.slice();
-    items.splice(index, 1);
-    wishlist.setState({items: items});
+    let removed_item = items.splice(index, 1)[0];
+
+    let msg = {from: 'sidebar', subject: 'delete_data', payload: removed_item};
+    let removing_data = browser.runtime.sendMessage(msg);
+    removing_data.then(() => {
+        wishlist.setState({items: items});
+    }, onError);
+
 }
 
 

@@ -83,15 +83,21 @@ class WishlistStore {
             'payload': item.toJSON()});
     }
 
-    // Remove item at index.  Returns item removed or null if no item
-    // was removed.
-    removeItem(i) {
-        if (i < 0 || i >= this.state.items.length) {
-            return;
-        }
-        var result = this.state.items[i];
-        this.state.splice(i, 1);
-        return result;
+    // Remove item using URL matching
+    removeItem(item) {
+        // First remove from the backing store and then clean up the
+        // in-memory state
+        let removing = browser.storage.local.remove(item.url);
+        removing.then(() => {
+            for (let idx = 0; idx < this.state.items.length; idx++) {
+                let tmp_item = this.state.items[idx];
+                if (tmp_item.url === item.url) {
+                    this.state.items.splice(idx, 1);
+                    console.log(`Deleting background data: ${JSON.stringify(tmp_item)}`);
+                    return tmp_item;
+                }
+            }
+        }, onError);
     }
 
     // Make JSON stringified copy of the array
@@ -195,8 +201,8 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
             WISHLIST.addItem(item);
         }, onError);
-    } else if ((msg.from === 'sidebar') && (msg.subject === 'deleted')) {
-        WISHLIST.removeItem(msg.payload);
+    } else if ((msg.from === 'sidebar') && (msg.subject === 'delete_data')) {
+        sendResponse(WISHLIST.removeItem(msg.payload));
     } else if ((msg.from === 'sidebar') && (msg.subject === 'request_refresh')) {
         let msg = {'from': 'background',
             'subject': 'response_refresh',
