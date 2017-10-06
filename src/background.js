@@ -15,6 +15,7 @@ function initialize() {
         for (let noteKey of noteKeys) {
             var curValue = results[noteKey];
             console.log(`URL: ${noteKey}\n\tObj: ${JSON.stringify(curValue)}`);
+            WISHLIST.addItem(curValue);
         }
     }, onError);
 }
@@ -81,7 +82,6 @@ class WishlistStore {
         browser.runtime.sendMessage({'from': 'background',
             'subject': 'added_item',
             'payload': item.toJSON()});
-        //
     }
 
     // Remove item at index.  Returns item removed or null if no item
@@ -97,7 +97,7 @@ class WishlistStore {
 
     // Make JSON stringified copy of the array
     getItems() {
-        return JSON.stringify(this.state.items.slice());
+        return this.state.items.slice();
     }
 
 }

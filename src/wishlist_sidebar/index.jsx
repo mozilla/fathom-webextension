@@ -108,6 +108,7 @@ class Wishlist extends React.Component {
             } else if ((msg.from === 'background') && (msg.subject === 'refresh_all_data')) {
                 // Just overwrite all the internal state in the react
                 // object
+                console.log("Got a refresh of all data");
                 currObject.setState({items: JSON.parse(msg.payload)});
             };
         });
