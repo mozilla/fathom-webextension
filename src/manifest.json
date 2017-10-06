@@ -1,48 +1,47 @@
 {
-
-  "manifest_version": 2,
-  "name": "fathom-products",
-  "version": "1.0",
-
-  "description": "Extracts a product from a product detail page.",
-
-  "icons": {
-    "19": "icons/product-icon-19.png",
-    "32": "icons/product-icon-32.png"
-  },
-
-  "page_action": {
-      "browser_style": true,
-      "default_icon": {
-          "19": "icons/product-icon-19.png",
-          "32": "icons/product-icon-32.png"
-      },
-      "default_title": "Add to Wishlist",
-    "default_popup": "popup/product_popup.html"
-  },
-
-  "sidebar_action": {
-      "default_title": "Wishlist",
-      "default_panel": "wishlist_sidebar/index.html",
-      "default_icon": "../icons/product-icon-32.png"
-  },
- "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
-  "content_scripts": [
-    {
-      "exclude_matches": [ "*://*.google.com/*", "*://*.google.ca/*"],
-      "matches": ["<all_urls>"],
-      "js": ["product-extension.js"],
-      "run_at":     "document_idle",
-      "all_frames": false
-    }
-  ],
-
-  "background": {
-    "scripts": ["background.js"]
-  },
-
-  "permissions": [
-      "storage"
-  ]
-
+    "manifest_version": 2,
+    "name": "fathom-products",
+    "version": "1.0",
+    "description": "Extracts a product from a product detail page.",
+    "icons": {
+        "19": "icons/product-icon-19.png",
+        "32": "icons/product-icon-32.png"
+    },
+    "page_action": {
+        "browser_style": true,
+        "default_icon": {
+            "19": "icons/product-icon-19.png",
+            "32": "icons/product-icon-32.png"
+        },
+        "default_title": "Add to Wishlist",
+        "default_popup": "popup/product_popup.html"
+    },
+    "sidebar_action": {
+        "default_title": "Wishlist",
+        "default_panel": "wishlist_sidebar/index.html",
+        "default_icon": "../icons/product-icon-32.png"
+    },
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
+    "content_scripts": [
+        {
+            "exclude_matches": [ "*://*.google.com/*", "*://*.google.ca/*"],
+            "matches": ["<all_urls>"],
+            "js": ["product-extension.js"],
+            "run_at":     "document_idle",
+            "all_frames": false
+        }
+    ],
+    "applications": {
+        "gecko": {
+            "id": "fathom-web-wishlist@mozilla.com",
+            "strict_min_version": "57.0",
+            "strict_max_version": "75.*"
+        }
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": [
+        "storage"
+    ]
 }

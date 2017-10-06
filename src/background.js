@@ -1,4 +1,23 @@
 // Store all the Fathom info for each tab
+//
+//
+
+/* generic error handler */
+function onError(error) {
+    console.log(error);
+}
+
+function initialize() {
+    var gettingAllStorageItems = browser.storage.local.get(null);
+    gettingAllStorageItems.then((results) => {
+        console.log("Fetched results from local storage!");
+        var noteKeys = Object.keys(results);
+        for (let noteKey of noteKeys) {
+            var curValue = results[noteKey];
+            console.log(`${noteKey}|${curValue}`);
+        }
+    }, onError);
+}
 
 class WishlistItem {
     constructor(title, description, price, url, image_url) {
@@ -87,6 +106,7 @@ var WISHLIST = new WishlistStore();
 var FATHOM_TAB_INFO = {};
 
 
+// TODO Move this into a registerListeners function
 browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
   if (FATHOM_TAB_INFO[tabId] !== undefined) {
     console.log(`Removing tabID: ${tabId}`);
@@ -119,6 +139,7 @@ browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
  * data has been updated manually through editting.
  *
  */
+// TODO Move this into a registerListeners function
 browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     // First, validate the message's structure
     if ((msg.from === 'content') && (msg.subject === 'ready')) {
@@ -170,3 +191,5 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         WISHLIST.addItem(item);
     }
 });
+
+initialize();
