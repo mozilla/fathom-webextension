@@ -49,3 +49,13 @@
     grid-row: 2;
 }
 
+
+.styled {
+    background-color: #eeeeee;
+    border: 3px solid #cccccc;
+    height: 120px;
+    padding: 5px;
+    font: bold 12px/1.5 Helvetica, Verdana, sans-serif;
+    resize: none;
+    width: 100%;
+}

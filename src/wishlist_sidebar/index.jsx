@@ -62,21 +62,28 @@ class WishlistItem extends React.Component {
                     'div',
                     {className: 'box g item-title'},
                     React.createElement(
-                        'a',
-                        {href: this.props.url},
-                        this.props.title,
+                        'textarea',
+                        {type: 'text',
+                            value: this.props.title,
+                            wrap: 'hard',
+                            className: 'styled'
+                        },
                     )
                 ),
                 React.createElement(
                     'div',
                     {className: 'box h item-image'},
                     React.createElement(
-                        'img',
-                        {
-                            src: this.props.image,
-                            width: 100,
-                            height: 100,
-                        },
+                        'a',
+                        {href: this.props.url},
+                        React.createElement(
+                            'img',
+                            {
+                                src: this.props.image,
+                                width: 100,
+                                height: 100,
+                            },
+                        ),
                     ),
                 )]
         );
