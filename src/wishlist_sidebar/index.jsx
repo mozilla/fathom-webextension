@@ -8,6 +8,15 @@ function onError(error) {
     console.log(error);
 }
 
+// Create our number formatter.
+var ccyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  // the default value for minimumFractionDigits depends on the currency
+  // and is usually already 2
+});
+
 
 function handleClick(wishlist, index) {
     // This is basically a delete operation
@@ -33,7 +42,8 @@ class WishlistItem extends React.Component {
         return React.createElement(
             'div',
             {className: 'box d'},
-            [ React.createElement(
+            [ 
+                React.createElement(
                     'div',
                     {
                         className: 'box e delete_button',
@@ -46,7 +56,7 @@ class WishlistItem extends React.Component {
                     {
                         className: 'box f item-price'
                     },
-                    this.props.price,
+                    ccyFormatter.format(this.props.price),
                 ),
                 React.createElement(
                     'div',
@@ -64,8 +74,8 @@ class WishlistItem extends React.Component {
                         'img',
                         {
                             src: this.props.image,
-                            width: 40,
-                            height: 40,
+                            width: 100,
+                            height: 100,
                         },
                     ),
                 )]

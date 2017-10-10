@@ -1,47 +1,5 @@
 * {margin: 0; padding: 0;}
 
-div {
-  margin: 0px;
-}
-
-ul {
-  list-style-type: none;
-  width: 500px;
-}
-
-h3 {
-  font: bold 12px/1.5 Helvetica, Verdana, sans-serif;
-}
-
-li img {
-  float: left;
-  margin: 0 5px 0 0;
-}
-
-li p {
-  font: bold 200 12px/1.5 Helvetica, Verdana, sans-serif;
-}
-
-.delete_button {
-    font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
-    float: left;
-    border: 1px;
-    right:0px;
-    bottom:0;
-    margin:0px;
-    padding:0px;
-}
-
-li {
-  padding: 10px;
-  overflow: auto;
-}
-
-li:hover {
-  background: #eee;
-  cursor: pointer;
-}
-
 /* CSS Grid layout stuff below */
 
 .wrapper {
@@ -49,6 +7,7 @@ li:hover {
     grid-gap: 5px;
     grid-template-columns: 100%;
     background-color: #fff;
+    font: bold 12px/1.5 Helvetica, Verdana, sans-serif;
     color: #444;
 }
 
@@ -57,7 +16,6 @@ li:hover {
     color: #fff;
     border-radius: 5px;
     padding: 10px;
-    font-size: 150%;
 }
 
 .box .box {
