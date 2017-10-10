@@ -41,3 +41,53 @@ li:hover {
   background: #eee;
   cursor: pointer;
 }
+
+/* CSS Grid layout stuff below */
+
+.wrapper {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 100%;
+    background-color: #fff;
+    color: #444;
+}
+
+.box {
+    background-color: #444;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 150%;
+}
+
+.box .box {
+    background-color: #ccc;
+    color: #444;
+}
+
+.d{
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 1fr 20fr;
+}
+
+.e {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.f {
+    grid-column: 2 / 21;
+    grid-row: 1;
+}
+
+.g {
+    grid-column: 1 / 15;
+    grid-row: 2;
+}
+
+.h {
+    grid-column: 15 / 21;
+    grid-row: 2;
+}
+
