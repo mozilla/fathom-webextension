@@ -31,34 +31,35 @@ class WishlistItem extends React.Component {
 
     render() {
         return React.createElement(
-            'li',
-            null,
-            React.createElement(
-                'div',
-                {className: 'wishlist-item'},
-                [
+            'div',
+            {className: 'box d'},
+            [ React.createElement(
+                    'div',
+                    {
+                        className: 'box e delete_button',
+                        onClick: () => this.props.handleClick(this.props.wishlist, this.props.item_index),
+                    },
+                    "X",
+                ),
+                React.createElement(
+                    'div',
+                    {
+                        className: 'box f item-price'
+                    },
+                    this.props.price,
+                ),
+                React.createElement(
+                    'div',
+                    {className: 'box g item-title'},
                     React.createElement(
-                        'div',
-                        {
-                            className: 'delete_button',
-                            onClick: () => this.props.handleClick(this.props.wishlist, this.props.item_index),
-                        },
-                        "X",
-                    ),
-                    React.createElement(
-                        'h3',
-                        {className: 'item-title'},
-                        React.createElement(
-                            'a',
-                            {href: this.props.url},
-                            this.props.title,
-                        )
-                    ),
-                    React.createElement(
-                        'p',
-                        {className: 'item-price'},
-                        this.props.price,
-                    ),
+                        'a',
+                        {href: this.props.url},
+                        this.props.title,
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    {className: 'box h item-image'},
                     React.createElement(
                         'img',
                         {
@@ -66,11 +67,8 @@ class WishlistItem extends React.Component {
                             width: 40,
                             height: 40,
                         },
-                        null,
                     ),
-
-                ],
-            )
+                )]
         );
     }
 }
@@ -142,11 +140,8 @@ class Wishlist extends React.Component {
 
         return React.createElement(
             'div',
-            { className: 'wishlist' },
-            React.createElement('ul', 
-                {className: 'some-list'},
-                itemElements,
-            )
+            {className: 'wishlist wrapper'},
+            itemElements
         );
     }
 
