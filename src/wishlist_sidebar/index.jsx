@@ -108,7 +108,14 @@ class WishlistItem extends React.Component {
                     {
                         className: 'box f item-price'
                     },
-                    ccyFormatter.format(this.props.price),
+                    React.createElement(
+                        'input',
+                        {
+                            type: 'text',
+                            className: 'text_edit',
+                            value: ccyFormatter.format(this.props.price),
+                        },
+                    )
                 ),
                 React.createElement(
                     'div',

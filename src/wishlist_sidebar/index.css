@@ -49,9 +49,16 @@
     grid-row: 2;
 }
 
+.text_edit {
+    background-color: #ccc;
+    border: none;
+    font: 12px/1.5 Helvetica, Verdana, sans-serif;
+    resize: none;
+    width: 100%;
+}
 
 .styled {
-    background-color: #eeeeee;
+    background-color: #ccc;
     border: 3px solid #cccccc;
     height: 120px;
     padding: 5px;
