@@ -48,8 +48,7 @@ class LiveEditTextArea extends React.Component {
     // LiveEditTextArea object
     setAndEmitState(state, callback) {
         this.setState(state, callback);
-
-        console.log(`Emit data to server ${JSON.stringify(this.state)}`);
+        console.log(`Emit new title data to server ${JSON.stringify(this.state)}`);
     }
 
     handleEdit(old_value) {
@@ -84,6 +83,66 @@ class LiveEditTextArea extends React.Component {
     }
 }
 
+class LiveEditInputText extends React.Component {
+    /*
+     * This whole thing is kludgey.
+     * We should really flip the value to just %0d.2d
+     * on edit and then reformat with dollar signs and commas
+     * when the onBlur occurs.  But this is good enough for now.
+     */
+    constructor(options) {
+        super();
+
+        this.state = {className: options.className, 
+                      value: options.value,
+                      dom_id: options.dom_id,};
+    }
+
+    validateInput(e) {
+        if (e.keyCode === 8) {
+            // This is backspace
+            return;
+        }
+        const re = /[\$0-9\.]+/g;
+        if (!re.test(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    handleEdit(old_value) {
+        let prev_value = old_value;
+
+        function closure() {
+            let old_value = prev_value;
+            let elem = window.document.getElementById(this.state.dom_id);
+            let new_value = elem.value;
+            this.setAndEmitState({value: new_value}).bind(this);
+        }
+        return closure;
+    }
+
+    setAndEmitState(state, callback) {
+        this.setState(state, callback);
+        console.log(`Emit new price data to server ${JSON.stringify(this.state)}`);
+    }
+
+    render() {
+        let blurFunc = this.handleEdit(this.state.value).bind(this);
+        return React.createElement(
+            'input',
+            {
+                id: this.state.dom_id,
+                type: 'text',
+                className: this.state.className,
+                onKeyPress: this.validateInput,
+                onBlur: blurFunc,
+                value: ccyFormatter.format(this.state.value),
+            },
+        );
+    }
+
+}
+
 
 class WishlistItem extends React.Component {
     constructor() {
@@ -109,11 +168,13 @@ class WishlistItem extends React.Component {
                         className: 'box f item-price'
                     },
                     React.createElement(
-                        'input',
+                        LiveEditInputText,
                         {
-                            type: 'text',
                             className: 'text_edit',
-                            value: ccyFormatter.format(this.props.price),
+                            dom_id: `wishlist_item_price_${this.props.item_index}`,
+                            value: this.props.price,
+                            url: this.props.url,
+                            fathom_ns: 'com.mozilla.fathom.ns.products.price',
                         },
                     )
                 ),
