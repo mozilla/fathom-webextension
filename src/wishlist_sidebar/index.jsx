@@ -95,19 +95,10 @@ class LiveEditInputText extends React.Component {
 
         this.state = {className: options.className, 
                       value: options.value,
-                      dom_id: options.dom_id,};
+                      dom_id: options.dom_id,
+                      isEditting: false};
     }
 
-    validateInput(e) {
-        if (e.keyCode === 8) {
-            // This is backspace
-            return;
-        }
-        const re = /[\$0-9\.]+/g;
-        if (!re.test(e.key)) {
-            e.preventDefault();
-        }
-    }
 
     handleEdit(old_value) {
         let prev_value = old_value;
@@ -116,6 +107,7 @@ class LiveEditInputText extends React.Component {
             let old_value = prev_value;
             let elem = window.document.getElementById(this.state.dom_id);
             let new_value = elem.value;
+            this.setState({isEditting: false});
             this.setAndEmitState({value: new_value}).bind(this);
         }
         return closure;
@@ -126,17 +118,39 @@ class LiveEditInputText extends React.Component {
         console.log(`Emit new price data to server ${JSON.stringify(this.state)}`);
     }
 
+    handleFocus(event) {
+        this.setState({isEditting: true});
+    }
+
+    changeClosure(old_value) {
+        let saved_oldvalue = old_value;
+        function handleChange(event) {
+            let new_value = event.target.value;
+
+            var re = /^\d+((\.\d{1})|(\.\d{2}))$/;
+            let valid_input = re.test(new_value);
+            if (valid_input) {
+                this.setState({value: new_value});
+            } else {
+                this.setState({value: saved_oldvalue});
+            }
+        }
+        return handleChange;
+    }
+
     render() {
         let blurFunc = this.handleEdit(this.state.value).bind(this);
+
         return React.createElement(
             'input',
             {
                 id: this.state.dom_id,
                 type: 'text',
                 className: this.state.className,
-                onKeyPress: this.validateInput,
+                onFocus: this.handleFocus.bind(this),
+                onChange: this.changeClosure(this.state.value).bind(this),
                 onBlur: blurFunc,
-                value: ccyFormatter.format(this.state.value),
+                value: this.state.isEditting ? this.state.value : ccyFormatter.format(this.state.value),
             },
         );
     }
