@@ -32,6 +32,58 @@ function handleClick(wishlist, index) {
 
 }
 
+class LiveEditTextArea extends React.Component {
+    constructor(options) {
+        super();
+        this.state = {
+            value: options.text,
+            dom_id: options.dom_id,
+            className: options.className,
+            url: options.url,
+            fathom_ns: options.fathom_ns
+        };
+    }
+
+    // this is like setState but assumes that 'this' is bound to the
+    // LiveEditTextArea object
+    setAndEmitState(state, callback) {
+        this.setState(state, callback);
+
+        console.log(`Emit data to server ${JSON.stringify(this.state)}`);
+    }
+
+    handleEdit(old_value) {
+        let prev_value = old_value;
+
+        function closure() {
+            let old_value = prev_value;
+            let elem = window.document.getElementById(this.state.dom_id);
+            let new_value = elem.value;
+            this.setAndEmitState({value: new_value}).bind(this);
+        }
+        return closure;
+    }
+
+    render() {
+        // Create a function closure and bind `this`
+        // so that we can see old and new values in the handleEdit
+        // function
+        let blurFunc = this.handleEdit(this.state.value).bind(this);
+
+        return React.createElement(
+            'textarea',
+            {
+                id: this.state.dom_id,
+                type: 'text',
+                value: this.state.value,
+                wrap: 'hard',
+                className: this.state.className,
+                onBlur: blurFunc,
+            },
+        );
+    }
+}
+
 
 class WishlistItem extends React.Component {
     constructor() {
@@ -62,12 +114,14 @@ class WishlistItem extends React.Component {
                     'div',
                     {className: 'box g item-title'},
                     React.createElement(
-                        'textarea',
-                        {type: 'text',
-                            value: this.props.title,
-                            wrap: 'hard',
-                            className: 'styled'
-                        },
+                        LiveEditTextArea,
+                        {
+                            text: this.props.title,
+                            className: 'styled',
+                            dom_id: `wishlist_item_title_${this.props.item_index}`,
+                            url: this.props.url,
+                            fathom_ns: 'com.mozilla.fathom.ns.products.title',
+                        }
                     )
                 ),
                 React.createElement(
