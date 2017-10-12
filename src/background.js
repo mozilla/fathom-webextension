@@ -7,10 +7,15 @@ function onError(error) {
     console.log(error);
 }
 
+function getStorageEngine() {
+    // Change this to browser.storage.local for local only storage
+    return browser.storage.sync;
+}
+
 function initialize() {
-    var gettingAllStorageItems = browser.storage.local.get(null);
+    var gettingAllStorageItems = getStorageEngine().get(null);
     gettingAllStorageItems.then((results) => {
-        console.log("Fetched results from local storage!");
+        console.log("Fetched results from storage.sync!");
         var noteKeys = Object.keys(results);
         for (let noteKey of noteKeys) {
             var tmp_value = results[noteKey];
@@ -87,7 +92,7 @@ class WishlistStore {
     removeItem(item) {
         // First remove from the backing store and then clean up the
         // in-memory state
-        let removing = browser.storage.local.remove(item.url);
+        let removing = getStorageEngine().remove(item.url);
         removing.then(() => {
             for (let idx = 0; idx < this.state.items.length; idx++) {
                 let tmp_item = this.state.items[idx];
@@ -190,7 +195,7 @@ browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         let storage_payload = {};
         storage_payload[key] = payload;
 
-        let setting = browser.storage.local.set(storage_payload);
+        let setting = getStorageEngine().set(storage_payload);
         console.log(`Saving item to disk! ${JSON.stringify(storage_payload)}`)
         setting.then(function() {
             console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
