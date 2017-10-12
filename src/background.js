@@ -1,6 +1,4 @@
 // Store all the Fathom info for each tab
-//
-//
 
 /* generic error handler */
 function onError(error) {
@@ -28,6 +26,8 @@ function initialize() {
             WISHLIST.addItem(item);
         }
     }, onError);
+
+    registerListeners();
 }
 
 class WishlistItem {
@@ -116,14 +116,6 @@ var WISHLIST = new WishlistStore();
 var FATHOM_TAB_INFO = {};
 
 
-// TODO Move this into a registerListeners function
-browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  if (FATHOM_TAB_INFO[tabId] !== undefined) {
-    console.log(`Removing tabID: ${tabId}`);
-    delete FATHOM_TAB_INFO[tabId];
-  }
-});
-
 /*
  * The background script receives a number of messages.
  *
@@ -149,72 +141,82 @@ browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
  * data has been updated manually through editting.
  *
  */
-// TODO Move this into a registerListeners function
-browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    // First, validate the message's structure
-    if ((msg.from === 'content') && (msg.subject === 'ready')) {
-        // Enable the page-action for the requesting tab
-        // PageActions are disabled by default
-        // Showing a page action means "show the icon", not "open the popup"
-        browser.pageAction.show(sender.tab.id);
+function registerListeners() {
+    browser.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+        // First, validate the message's structure
+        if ((msg.from === 'content') && (msg.subject === 'ready')) {
+            // Enable the page-action for the requesting tab
+            // PageActions are disabled by default
+            // Showing a page action means "show the icon", not "open the popup"
+            browser.pageAction.show(sender.tab.id);
 
-        // Save fathom scores into FATHOM_TAB_INFO
-        console.log(`Received fathom data: ${JSON.stringify(msg.scores)}`);
-        FATHOM_TAB_INFO[sender.tab.id] = msg.scores;
-        console.log(`Added score info ${JSON.stringify(msg.scores)}`);
-    } else if ((msg.from === 'popup') && (msg.subject === 'getDOMInfo')) {
-        console.log("Got message from popup for getDOMInfo");
-        function onTabInfo(tabs) {
-            for (let tab of tabs) {
-                // tab.url requires the `tabs` permission
-                let tabId = tab.id;
-                let resultData = FATHOM_TAB_INFO[tabId];
-                console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
+            // Save fathom scores into FATHOM_TAB_INFO
+            console.log(`Received fathom data: ${JSON.stringify(msg.scores)}`);
+            FATHOM_TAB_INFO[sender.tab.id] = msg.scores;
+            console.log(`Added score info ${JSON.stringify(msg.scores)}`);
+        } else if ((msg.from === 'popup') && (msg.subject === 'getDOMInfo')) {
+            console.log("Got message from popup for getDOMInfo");
+            function onTabInfo(tabs) {
+                for (let tab of tabs) {
+                    // tab.url requires the `tabs` permission
+                    let tabId = tab.id;
+                    let resultData = FATHOM_TAB_INFO[tabId];
+                    console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
 
-                // Note that we can't use the sendResponse function to send back data.
-                // No idea why this happens, but the promise in the pageAction popup
-                // doesn't seem to get payload we pass into sendResponse.
-                browser.runtime.sendMessage({'from': 'background',
-                    'subject': 'fathom_data',
-                    'payload': resultData});
+                    // Note that we can't use the sendResponse function to send back data.
+                    // No idea why this happens, but the promise in the pageAction popup
+                    // doesn't seem to get payload we pass into sendResponse.
+                    browser.runtime.sendMessage({'from': 'background',
+                        'subject': 'fathom_data',
+                        'payload': resultData});
 
+                }
             }
-        }
 
-        // Get the currently selected tab 
-        var selected_tab_promise = browser.tabs.query({currentWindow: true, active: true});
-        // With the selected tab, we want to use onTabInfo to send the
+            // Get the currently selected tab 
+            var selected_tab_promise = browser.tabs.query({currentWindow: true, active: true});
+            // With the selected tab, we want to use onTabInfo to send the
             // fathom data over the browser messaging bus
-        selected_tab_promise.then(onTabInfo, onError);
-    } else if ((msg.from === 'popup') && (msg.subject === 'save_product')) {
-        // This is a product we want to save.  Append it to the
-        // wishlist
-        let payload = msg.payload;
-        let key = payload.url;
+            selected_tab_promise.then(onTabInfo, onError);
+        } else if ((msg.from === 'popup') && (msg.subject === 'save_product')) {
+            // This is a product we want to save.  Append it to the
+            // wishlist
+            let payload = msg.payload;
+            let key = payload.url;
 
-        let storage_payload = {};
-        storage_payload[key] = payload;
+            let storage_payload = {};
+            storage_payload[key] = payload;
 
-        let setting = getStorageEngine().set(storage_payload);
-        console.log(`Saving item to disk! ${JSON.stringify(storage_payload)}`)
-        setting.then(function() {
-            console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
-            let item = new WishlistItem(payload.title,
-                payload.price,
-                payload.url,
-                payload.image);
+            let setting = getStorageEngine().set(storage_payload);
+            console.log(`Saving item to disk! ${JSON.stringify(storage_payload)}`)
+            setting.then(function() {
+                console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
+                let item = new WishlistItem(payload.title,
+                    payload.price,
+                    payload.url,
+                    payload.image);
 
-            WISHLIST.addItem(item);
-        }, onError);
-    } else if ((msg.from === 'sidebar') && (msg.subject === 'delete_data')) {
-        sendResponse(WISHLIST.removeItem(msg.payload));
-    } else if ((msg.from === 'sidebar') && (msg.subject === 'request_refresh')) {
-        let msg = {'from': 'background',
-            'subject': 'response_refresh',
-            'payload': WISHLIST.getItems()};
-        console.log(`Background script is refreshing with ${JSON.stringify(msg)}`);
-        browser.runtime.sendMessage(msg);
-    }
-});
+                WISHLIST.addItem(item);
+            }, onError);
+        } else if ((msg.from === 'sidebar') && (msg.subject === 'delete_data')) {
+            sendResponse(WISHLIST.removeItem(msg.payload));
+        } else if ((msg.from === 'sidebar') && (msg.subject === 'request_refresh')) {
+            let msg = {'from': 'background',
+                'subject': 'response_refresh',
+                'payload': WISHLIST.getItems()};
+            console.log(`Background script is refreshing with ${JSON.stringify(msg)}`);
+            browser.runtime.sendMessage(msg);
+        }
+    });
+
+    browser.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+        if (FATHOM_TAB_INFO[tabId] !== undefined) {
+            console.log(`Removing tabID: ${tabId}`);
+            delete FATHOM_TAB_INFO[tabId];
+        }
+    });
+
+
+}
 
 initialize();
