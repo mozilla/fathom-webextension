@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 require('./index.css');
 
-
 /* generic error handler */
 function onError(error) {
     console.log(error);
@@ -32,7 +31,23 @@ function handleClick(wishlist, index) {
 
 }
 
-class LiveEditTextArea extends React.Component {
+function emitValue(value, state) {
+    let payload = {value: state.value, 
+        url: state.url, 
+        fathom_ns: state.fathom_ns};
+    let json_string = JSON.stringify(payload);
+    let xhr = new XMLHttpRequest();   // new HttpRequest instance
+    xhr.open("POST", "http://mockbin.com/request");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(json_string);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            console.log(xhr.responseText);
+        }
+    }
+}
+
+class TitleComponent extends React.Component {
     constructor(options) {
         super();
         this.state = {
@@ -45,10 +60,10 @@ class LiveEditTextArea extends React.Component {
     }
 
     // this is like setState but assumes that 'this' is bound to the
-    // LiveEditTextArea object
+    // TitleComponent object
     setAndEmitState(state, callback) {
         this.setState(state, callback);
-        console.log(`Emit new title data to server ${JSON.stringify(this.state)}`);
+        emitValue(state.value, this.state);
     }
 
     handleEdit(old_value) {
@@ -83,7 +98,7 @@ class LiveEditTextArea extends React.Component {
     }
 }
 
-class LiveEditInputText extends React.Component {
+class PriceComponent extends React.Component {
     /*
      * This whole thing is kludgey.
      * We should really flip the value to just %0d.2d
@@ -96,6 +111,8 @@ class LiveEditInputText extends React.Component {
         this.state = {className: options.className, 
                       value: options.value,
                       dom_id: options.dom_id,
+                      url: options.url,
+                      fathom_ns: options.fathom_ns,
                       isEditting: false};
     }
 
@@ -115,7 +132,7 @@ class LiveEditInputText extends React.Component {
 
     setAndEmitState(state, callback) {
         this.setState(state, callback);
-        console.log(`Emit new price data to server ${JSON.stringify(this.state)}`);
+        emitValue(state.value, this.state);
     }
 
     handleFocus(event) {
@@ -127,7 +144,7 @@ class LiveEditInputText extends React.Component {
         function handleChange(event) {
             let new_value = event.target.value;
 
-            var re = /^\d+((\.\d{1})|(\.\d{2}))$/;
+            var re = /^\d+(\.\d*)?$/;
             let valid_input = re.test(new_value);
             if (valid_input) {
                 this.setState({value: new_value});
@@ -182,7 +199,7 @@ class WishlistItem extends React.Component {
                         className: 'box f item-price'
                     },
                     React.createElement(
-                        LiveEditInputText,
+                        PriceComponent,
                         {
                             className: 'text_edit',
                             dom_id: `wishlist_item_price_${this.props.item_index}`,
@@ -196,7 +213,7 @@ class WishlistItem extends React.Component {
                     'div',
                     {className: 'box g item-title'},
                     React.createElement(
-                        LiveEditTextArea,
+                        TitleComponent,
                         {
                             text: this.props.title,
                             className: 'styled',
