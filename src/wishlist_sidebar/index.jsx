@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 require('./index.css');
 
+import Messages from './messages';
+
 /* generic error handler */
 function onError(error) {
     console.log(error);
@@ -254,8 +256,7 @@ class Wishlist extends React.Component {
     }
 
     requestRefresh() {
-        let msg = {from: 'sidebar', subject: 'request_refresh'};
-        browser.runtime.sendMessage(msg);
+        browser.runtime.sendMessage(Messages.REFRESH_SIDEBAR.toJSON());
     }
 
     /*

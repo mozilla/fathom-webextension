@@ -27,8 +27,7 @@
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-node": "^5.1.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.2.0",
-    "riek": "^1.1.0"
+    "mocha": "^3.2.0"
   },
   "engines": {
     "node": ">= 6.0.0"
