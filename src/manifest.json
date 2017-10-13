@@ -14,7 +14,7 @@
             "32": "icons/product-icon-32.png"
         },
         "default_title": "Add to Wishlist",
-        "default_popup": "popup/product_popup.html"
+        "default_popup": "page_action/index.html"
     },
     "sidebar_action": {
         "default_title": "Wishlist",

@@ -44,7 +44,7 @@ var sidebar_config = {
         }),
         new CopyWebpackPlugin([
             {from: 'icons', to: BUILD_DIR+'/icons'},
-            {from: 'popup', to: BUILD_DIR+'/popup' },
+            {from: 'page_action', to: BUILD_DIR+'/page_action' },
             {from: 'background.js', to: BUILD_DIR },
             {from: 'manifest.json', to: BUILD_DIR },
         ]),

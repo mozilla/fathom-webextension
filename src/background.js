@@ -215,8 +215,6 @@ function registerListeners() {
             delete FATHOM_TAB_INFO[tabId];
         }
     });
-
-
 }
 
 initialize();
