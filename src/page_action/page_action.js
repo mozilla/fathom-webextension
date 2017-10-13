@@ -8,11 +8,11 @@ function setFathomInfo(info) {
 browser.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   if ((msg.from === 'background') && (msg.subject === 'fathom_data')) {
       browser.runtime.sendMessage({from: 'popup', subject: 'save_product', payload: msg.payload});
-      // TODO: Change the DOM to say "saved" and then close the popup
-      // after 200ms.
   } else if ((msg.from === 'background') && (msg.subject === 'product_saved')) {
-      // Set the state on successful state change in backing datastore
       document.getElementById('save_state').innerHTML = 'Saved!';
+      setTimeout(() => {
+          window.close();
+      }, 500);
   }
 });
 

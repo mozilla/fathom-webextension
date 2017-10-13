@@ -156,28 +156,28 @@ function registerListeners() {
             console.log(`Added score info ${JSON.stringify(msg.scores)}`);
         } else if ((msg.from === 'popup') && (msg.subject === 'getDOMInfo')) {
             console.log("Got message from popup for getDOMInfo");
-            function onTabInfo(tabs) {
-                for (let tab of tabs) {
-                    // tab.url requires the `tabs` permission
-                    let tabId = tab.id;
-                    let resultData = FATHOM_TAB_INFO[tabId];
-                    console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
-
-                    // Note that we can't use the sendResponse function to send back data.
-                    // No idea why this happens, but the promise in the pageAction popup
-                    // doesn't seem to get payload we pass into sendResponse.
-                    browser.runtime.sendMessage({'from': 'background',
-                        'subject': 'fathom_data',
-                        'payload': resultData});
-
-                }
-            }
 
             // Get the currently selected tab 
             var selected_tab_promise = browser.tabs.query({currentWindow: true, active: true});
             // With the selected tab, we want to use onTabInfo to send the
             // fathom data over the browser messaging bus
-            selected_tab_promise.then(onTabInfo, onError);
+            selected_tab_promise.then(
+                (tabs) => {
+                    for (let tab of tabs) {
+                        // tab.url requires the `tabs` permission
+                        let tabId = tab.id;
+                        let resultData = FATHOM_TAB_INFO[tabId];
+                        console.log(`Sending data back to popup: ${JSON.stringify(resultData)}`);
+
+                        // Note that we can't use the sendResponse function to send back data.
+                        // No idea why this happens, but the promise in the pageAction popup
+                        // doesn't seem to get payload we pass into sendResponse.
+                        browser.runtime.sendMessage({'from': 'background',
+                            'subject': 'fathom_data',
+                            'payload': resultData});
+
+                    }
+                }, onError);
         } else if ((msg.from === 'popup') && (msg.subject === 'save_product')) {
             // This is a product we want to save.  Append it to the
             // wishlist
@@ -190,7 +190,8 @@ function registerListeners() {
             let setting = getStorageEngine().set(storage_payload);
             console.log(`Saving item to disk! ${JSON.stringify(storage_payload)}`)
             setting.then(function() {
-                console.log(`Saved item to disk! ${JSON.stringify(storage_payload)}`)
+                browser.runtime.sendMessage({from: 'background', subject: 'product_saved'});
+
                 let item = new WishlistItem(payload.title,
                     payload.price,
                     payload.url,
