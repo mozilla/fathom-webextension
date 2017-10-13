@@ -37,3 +37,27 @@ sidebars can only be opened by the user.
 All the data is stored in the background.js script.  
 
 This is all stored in a class `WishlistStore`
+
+
+Message types:
+
+-----
+from    : sidebar           
+subject : request_refresh
+payload : undefined
+
+Sent by the sidebar when the sidebar needs all the wishlist data for rendering.
+
+-----
+from    : sidebar           
+subject : delete_data
+payload : the JSON object to remove from the backing datastore
+
+Sent by the sidebar when the sidebar needs the backend to remove an
+entry in the wishlist dictionary
+
+Sent when the sidebar needs all the wishlist data for rendering.
+
+
+
+
